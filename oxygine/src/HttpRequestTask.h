@@ -48,6 +48,7 @@ namespace oxygine
         void addHeader(const std::string& key, const std::string& value);
 
         void setPostData(const std::vector<unsigned char>& data);
+        void setHeaders(std::vector<std::vector<std::pair<std::string,std::string>>>& headers);
         void setUrl(const std::string& url);
         void setFileName(const std::string& name);
         void setCacheEnabled(bool enabled);
@@ -66,6 +67,7 @@ namespace oxygine
         virtual void _setFileName(const std::string& name) {}
         virtual void _setUrl(const std::string& url) {}
         virtual void _setPostData(const std::vector<unsigned char>& data) {}
+        virtual void _setHeaders(std::vector<std::vector<std::pair<std::string,std::string>>>& headers) {}
         virtual void _setCacheEnabled(bool enabled) {}
         virtual void _addHeader(const std::string& key, const std::string& value) {}
 
@@ -75,5 +77,6 @@ namespace oxygine
         bool _cacheEnabled;
         std::vector<unsigned char> _response;
         std::vector<unsigned char> _postData;
+        std::vector<std::vector<std::pair<std::string,std::string>>> _headers;
     };
 }

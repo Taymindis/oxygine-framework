@@ -213,6 +213,25 @@ namespace oxygine
         _easy = 0;
     }
 
+    void HttpRequestTaskCURL::getHeaders(curl_slist& headers) {
+        if(_headers.empty()) {
+            headers = curl_slist_append(headers, "Content-Type: text/plain");
+        } else {
+            vector<pair<string,string>> header_pair;
+            pair<string,string> str_pair;
+            for (vector<vector<pair<string,string>>>::iterator it=_headers.begin(); it != _headers.end(); ++it) {
+                header_pair = *it;
+                for (vector<pair<string,string> >::iterator it2 = header_pair.begin(); it2 != header_pair.end(); ++it2) {
+                    str_pair = *it2;
+                    std::stringstream ss;
+                    ss << str_pair.first << ":" << str_pair.second;
+                    std::string param = ss.str();
+                    headers = curl_slist_append(headers, param);                    
+                }               
+            }
+        }
+    }
+
     void HttpRequestTaskCURL::_run()
     {
         curl_easy_setopt(_easy, CURLOPT_URL, _url.c_str());
@@ -227,11 +246,12 @@ namespace oxygine
         //curl_slist *header = curl_slist_append(0, "hello");
         //curl_easy_setopt(_easy, CURLOPT_HEADER, header);
 
-        if (!_postData.empty())
-        {
+        if (!_postData.empty()){
             curl_slist* headers = NULL; // init to NULL is important
             //headers = curl_slist_append(headers, "Accept:")
-            headers = curl_slist_append(headers, "Content-Type: text/plain");
+            
+            HttpRequestTaskCURL::getHeaders(headers);
+
             curl_easy_setopt(_easy, CURLOPT_HTTPHEADER, headers);
 
             //curl_easy_setopt(_easy, CURLOPT_PORT, 4002);
@@ -249,6 +269,11 @@ namespace oxygine
             curl_easy_setopt(_easy, CURLOPT_POSTFIELDSIZE, _postData.size());
 
             //curl_easy_setopt(_easy, CURLOPT_TCP_KEEPALIVE, 1);
+        } else {
+            curl_slist* headers = NULL; // init to NULL is important
+            //headers = curl_slist_append(headers, "Accept:")            
+            HttpRequestTaskCURL::getHeaders(headers);
+            curl_easy_setopt(_easy, CURLOPT_HTTPHEADER, headers);
         }
 
         curl_easy_setopt(_easy, CURLOPT_HEADER, 0);

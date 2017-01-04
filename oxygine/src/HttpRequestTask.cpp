@@ -40,6 +40,12 @@ namespace oxygine
         _setPostData(data);
     }
 
+    void HttpRequestTask::setHeaders(std::vector<std::vector<std::pair<std::string,std::string>>>& headers)
+    {
+        _headers = headers;
+        _setHeaders(headers);
+    }
+
     void HttpRequestTask::setUrl(const std::string& url)
     {
         _url = url;
@@ -60,8 +66,14 @@ namespace oxygine
 
     void HttpRequestTask::addHeader(const std::string& key, const std::string& value)
     {
-        OX_ASSERT(!"not implemented");
-        _addHeader(key, value);
+        OX_ASSERT(!"Implmenting");
+        if(!key.empty()) {
+            std::vector<std::pair<std::string,std::string>> header;
+            header.push_back(std::make_pair(key,value));
+            _headers.push_back(header);
+            _addHeader(key, value);
+            header.clear();
+        }
     }
 
     const std::vector<unsigned char>&   HttpRequestTask::getPostData() const

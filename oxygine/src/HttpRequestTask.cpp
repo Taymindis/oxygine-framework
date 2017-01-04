@@ -27,6 +27,9 @@ namespace oxygine
     HttpRequestTask::~HttpRequestTask()
     {
         log::messageln("~HttpRequestTask");
+        if(!_headers.empty()) {
+            _headers.clear();
+        }
     }
 
     void HttpRequestTask::setCustomRequests(createHttpRequestCallback cb)
@@ -38,12 +41,6 @@ namespace oxygine
     {
         _postData = data;
         _setPostData(data);
-    }
-
-    void HttpRequestTask::setHeaders(std::vector<std::vector<std::pair<std::string,std::string>>>& headers)
-    {
-        _headers = headers;
-        _setHeaders(headers);
     }
 
     void HttpRequestTask::setUrl(const std::string& url)
@@ -67,12 +64,9 @@ namespace oxygine
     void HttpRequestTask::addHeader(const std::string& key, const std::string& value)
     {
         OX_ASSERT(!"Implmenting");
-        if(!key.empty()) {
-            std::vector<std::pair<std::string,std::string>> header;
-            header.push_back(std::make_pair(key,value));
-            _headers.push_back(header);
-            _addHeader(key, value);
-            header.clear();
+        if(!key.empty()) {            
+            _headers.push_back(std::make_pair(key,value));          
+            _addHeader(key, value);            
         }
     }
 
